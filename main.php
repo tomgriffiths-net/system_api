@@ -1,9 +1,5 @@
 <?php
-//Your Settings can be read here: settings::read('myArray/settingName') = $settingValue;
-//Your Settings can be saved here: settings::set('myArray/settingName',$settingValue,$overwrite = true/false);
 class system_api{
-    //public static function command($line):void{}//Run when base command is class name, $line is anything after base command (string). e.g. > [base command] [$line]
-    //public static function init():void{}//Run at startup
     public static function getProcessCpuUsage($processId):float{
         $float = floatval(shell_exec('packages\\system_api\\cpuUsage\\cpuUsage.exe ' . $processId));
         if($float > 100){

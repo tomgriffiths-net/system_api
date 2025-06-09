@@ -1,7 +1,7 @@
 <?php
 class system_api{
     public static function getProcessCpuUsage($processId):float{
-        $float = floatval(shell_exec('packages\\system_api\\cpuUsage\\cpuUsage.exe ' . $processId));
+        $float = floatval(shell_exec('packages\\system_api\\files\\cpuUsage.exe ' . $processId));
         if($float > 100){
             $float = 100;
         }

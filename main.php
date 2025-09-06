@@ -1,6 +1,6 @@
 <?php
 class system_api{
-    public static function getProcessCpuUsage($processId):float{
+    public static function getProcessCpuUsage(string|int $processId):float{
         $float = floatval(shell_exec('packages\\system_api\\files\\cpuUsage.exe ' . $processId));
         if($float > 100){
             $float = 100;
@@ -35,8 +35,8 @@ class system_api{
 
         return $return;
     }
-    public static function getProcessChildProcesses($parentPid){
-        $return = array();
+    public static function getProcessChildProcesses(string|int $parentPid):array{
+        $return = [];
         $childProcesses = explode("\n",shell_exec('wmic process where "parentprocessid=' . $parentPid . '" get caption,processid'));
         array_shift($childProcesses);
         foreach($childProcesses as $childProcess){
@@ -48,7 +48,7 @@ class system_api{
         }
         return $return;
     }
-    public static function getProcessMemoryUsage($pid):int{
+    public static function getProcessMemoryUsage(string|int $pid):int{
         if(is_numeric($pid)){
             $lines = explode("\n",shell_exec('tasklist /fi "pid eq ' . $pid . '"'));
             if(isset($lines[3])){
@@ -60,5 +60,21 @@ class system_api{
             }
         }
         return 0;
+    }
+    public static function isVisualRedistributableInstalled(string $version="14.0"):bool{
+        if(preg_match("/^[0-9.]+$/", $version)){
+
+            exec('reg query "HKLM\SOFTWARE\Microsoft\VisualStudio\\' . $version . '\VC\Runtimes\x64" /v Installed', $output, $ret);
+
+            if($ret === 0){
+                foreach($output as $line){
+                    if(preg_match('/Installed\s+REG_DWORD\s+0x1/i', $line)){
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 }

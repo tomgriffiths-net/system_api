@@ -1,8 +1,8 @@
 {
-    "dependencies": [],
     "id_name": "system_api",
+    "name": "System API",
     "version": 3,
     "author": "tom",
-    "name": "System API",
-    "description": ""
+    "description": "",
+    "dependencies": []
 }

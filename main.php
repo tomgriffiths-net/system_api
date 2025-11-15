@@ -1,6 +1,6 @@
 <?php
 class system_api{
-    public static function getProcessCpuUsage(string|int $processId):float{
+    public static function getProcessCpuUsage(int $processId):float{
         $float = floatval(shell_exec('packages\\system_api\\files\\cpuUsage.exe ' . $processId));
         if($float > 100){
             $float = 100;
@@ -35,20 +35,23 @@ class system_api{
 
         return $return;
     }
-    public static function getProcessChildProcesses(string|int $parentPid):array{
+    public static function getProcessChildProcesses(int $parentPid):array{
         $return = [];
-        $childProcesses = explode("\n",shell_exec('wmic process where "parentprocessid=' . $parentPid . '" get caption,processid'));
+        $childProcesses = explode("\n",shell_exec('powershell -command "Get-CimInstance Win32_Process -Filter "ParentProcessId=' . $parentPid . '" | Select-Object ProcessId, Name"'));
+        array_shift($childProcesses);
+        array_shift($childProcesses);
         array_shift($childProcesses);
         foreach($childProcesses as $childProcess){
-            $childProcess = trim($childProcess);
-            $pid = trim(substr($childProcess,strpos($childProcess," ")+1));
+            $pid = trim(substr($childProcess, 0, 9));
+            $process = trim(substr($childProcess, 9));
+
             if(is_numeric($pid)){
-                $return[substr($childProcess,0,strpos($childProcess," "))] = $pid;
+                $return[$process] = intval($pid);
             }
         }
         return $return;
     }
-    public static function getProcessMemoryUsage(string|int $pid):int{
+    public static function getProcessMemoryUsage(int $pid):int{
         if(is_numeric($pid)){
             $lines = explode("\n",shell_exec('tasklist /fi "pid eq ' . $pid . '"'));
             if(isset($lines[3])){

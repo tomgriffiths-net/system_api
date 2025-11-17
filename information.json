@@ -1,7 +1,7 @@
 {
     "id_name": "system_api",
-    "name": "System API",
-    "version": 3,
+    "name": "System tools (Dev)",
+    "version": 4,
     "author": "tom",
     "description": "",
     "dependencies": []

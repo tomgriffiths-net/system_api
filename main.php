@@ -36,8 +36,13 @@ class system_api{
         return $return;
     }
     public static function getProcessChildProcesses(int $parentPid):array{
+        $processes = shell_exec('powershell -command "Get-CimInstance Win32_Process -Filter "ParentProcessId=' . $parentPid . '" | Select-Object ProcessId, Name"');
+        if(empty($processes)){
+            return [];
+        }
+
         $return = [];
-        $childProcesses = explode("\n",shell_exec('powershell -command "Get-CimInstance Win32_Process -Filter "ParentProcessId=' . $parentPid . '" | Select-Object ProcessId, Name"'));
+        $childProcesses = explode("\n", $processes);
         array_shift($childProcesses);
         array_shift($childProcesses);
         array_shift($childProcesses);
